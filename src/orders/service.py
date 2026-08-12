@@ -12,12 +12,12 @@ def cancel_order(order_id: str) -> Order:
 
     Raises KeyError if the order is unknown, ValueError if it can't be cancelled.
     """
-    order = store.get(order_id)
+    order = store.fetch(order_id)
     if order is None:
         raise KeyError(f"unknown order: {order_id}")
     if order.status != "pending":
         raise ValueError(f"cannot cancel a {order.status} order")
     order.status = "cancelled"
-    store.save(order)
+    store.put(order)
     logger.info("cancelled order %s", order_id)
     return order

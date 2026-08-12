@@ -7,9 +7,9 @@ _ORDERS: dict[str, Order] = {
 }
 
 
-def get(order_id: str) -> Order | None:
+def fetch(order_id: str) -> Order | None:
     return _ORDERS.get(order_id)
 
 
-def save(order: Order) -> None:
+def put(order: Order) -> None:
     _ORDERS[order.order_id] = order
