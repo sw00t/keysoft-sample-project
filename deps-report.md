@@ -12,11 +12,11 @@ Source: `pyproject.toml`, `requirements.txt`
 | `pytest` | `pyproject.toml` `[project.optional-dependencies] dev = ["pytest"]`, unpinned | 9.1.1 | 9.1.1 | Up to date |
 | `setuptools` | `pyproject.toml` `[build-system] requires = ["setuptools>=61"]` | 79.0.1 | 84.0.0 | **Outdated** — 5 major versions behind |
 
-`pyproject.toml` declares **zero runtime dependencies** (`dependencies = []`). Import scan of `src/orders` and `tests` confirms only the local `orders` package and stdlib (`dataclasses`, `copy`, `logging`) plus `pytest` are actually used.
+`pyproject.toml` declares **zero runtime dependencies** (`dependencies = []`). Import scan of `src/orders` and `tests` (`grep -rhoE '^\s*(import|from)\s+[a-zA-Z0-9_\.]+'`) confirms only the local `orders` package and stdlib (`dataclasses`, `copy`, `logging`) plus `pytest` are actually used.
 
 ## 2. Python — installed but undeclared
 
-The following packages are present in `.venv` but appear in no manifest (`pyproject.toml`, `requirements.txt`) and are not imported anywhere in `src/` or `tests/`:
+Present in `.venv` but appear in no manifest (`pyproject.toml`, `requirements.txt`) and are not imported anywhere in `src/` or `tests/`:
 
 | Package | Installed | Latest on PyPI | Status |
 |---|---|---|---|
@@ -42,8 +42,10 @@ Source: `.devcontainer/devcontainer.json`, `.devcontainer/devcontainer-lock.json
 | Dependency | Declared constraint | Resolved / installed | Latest available | Status |
 |---|---|---|---|---|
 | `@anthropic-ai/claude-code` (npm, global) | none — bare `npm install -g @anthropic-ai/claude-code` in `postCreateCommand` | 2.1.229 | 2.1.229 | Up to date, but unpinned (no lockfile) |
-| `mcr.microsoft.com/devcontainers/python` base image | `:3.11` (floating major.minor tag) | Python 3.11.15 | image line offers up to `3.14` | **Outdated** — pinned 3 minors behind the newest supported line |
-| `ghcr.io/devcontainers/features/node` | `:1` (major-only, config `{}`) | locked to `1.7.1` via `devcontainer-lock.json` | `2.1.0` | **Outdated** — pinned to major `1`, current major is `2` |
+| `mcr.microsoft.com/devcontainers/python` base image | `:3.11` (floating major.minor tag) | Python 3.11.15 | image line offers up to `3.14` (verified via MCR tag list: 3.6–3.14) | **Outdated** — pinned 3 minors behind the newest supported line |
+| `ghcr.io/devcontainers/features/node` | `:1` (major-only, config `{}`) | locked to `1.7.1` via `devcontainer-lock.json` | `2.1.0` (verified via devcontainers/features upstream `devcontainer-feature.json`) | **Outdated** — pinned to major `1`, current major is `2` |
+
+No GitHub Actions workflows exist in the repo (`.github/workflows` absent, confirmed by repo history — "Removed Github workflows folder"), so there are no pinned-action versions to audit.
 
 ## Summary
 
@@ -52,3 +54,7 @@ Source: `.devcontainer/devcontainer.json`, `.devcontainer/devcontainer-lock.json
 - 4 packages installed in `.venv` (`GitPython`, `python-dotenv`, `gitdb`, `smmap`) are not referenced by any manifest or import — worth removing or declaring explicitly if intentional.
 - No lockfile exists for Python dependencies; `requirements.txt` only does `-e .[dev]`, so installed versions are not pinned/reproducible beyond this snapshot.
 - `@anthropic-ai/claude-code` is installed globally with no version pin in `postCreateCommand`, so container rebuilds always pull the latest npm release.
+
+## PR posting status
+
+This report was **not posted to a pull request**: the GitHub MCP server (`list_pull_requests`, repo `sw00t/keysoft-sample-project`, `state=all`) and `gh pr list --state all` both returned zero results. The repository currently has only one branch (`main`, at commit `6d290f8`) and no open or closed pull requests exist to comment on. The report has been written to `deps-report.md` in the repo instead; it can be posted automatically the next time an actual PR is opened.
