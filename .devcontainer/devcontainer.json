@@ -1,10 +1,10 @@
 {
   "name": "keysoft-sample-project",
-  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "image": "mcr.microsoft.com/devcontainers/python:3.14",
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {}
+    "ghcr.io/devcontainers/features/node:2": {}
   },
-  "postCreateCommand": "npm install -g @anthropic-ai/claude-code; python -m venv .venv && .venv/bin/pip install -r requirements.txt",
+  "postCreateCommand": "npm install -g @anthropic-ai/claude-code@2.1.229; python -m venv .venv && .venv/bin/pip install -r requirements.txt",
   "customizations": {
     "vscode": {
       "extensions": ["ms-python.python"],

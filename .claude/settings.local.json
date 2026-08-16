@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout *)",
+      "Bash(git add *)",
+      "Bash(git push *)",
+      "Bash(gh pr *)",
+      "Bash(gh run *)",
+      "Bash(git commit -m ' *)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "github"
+  ]
+}
